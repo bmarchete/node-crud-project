@@ -30,4 +30,52 @@ router.post('/',(req,res,next)=>{
   },next)
 });
 
+router.get('/edit/:id',(req,res,next)=>{
+  const {id} = req.params;
+
+  db("users")
+  .where("id", id)
+  .first()
+  .then((user) => {
+
+    res.render("users/update",{
+      title: "Atualizar usuário",
+      user: user,
+      partials:  {
+        nav: "partials/nav"
+      }
+    });
+  },next);
+
+
+});
+
+router.put('/edit/:id', (req,res,next)=>{
+  const {id} = req.params;
+
+  db("users")
+  .where('id', id)
+  .update(req.body)
+  .then((r) => {
+    if (r === 0) {
+      return res.send(400);
+    }
+    res.redirect('/users');
+  },next)
+});
+
+router.delete('/delete/:id', (req,res,next)=>{
+  const {id} = req.params;
+
+  db("users")
+  .where('id', id)
+  .delete()
+  .then((r) => {
+    if (r === 0) {
+      return res.send(400);
+    }
+    res.redirect('/users');
+  },next)
+});
+
 module.exports = router;
